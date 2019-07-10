@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <ApplicationIcon />
+    <StartupObject />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Porter2Stemmer\Porter2Stemmer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>settings.json</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="settings.json">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+</Project>
