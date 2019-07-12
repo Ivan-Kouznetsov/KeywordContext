@@ -13,11 +13,11 @@ This is a Windows application with a graphical interface that uses .NET Core 3.0
 ![](http://dailymark.legal/images/NalpMarkScreenshot.png)
 
 #### Make Customizable Word Clouds
-Words related to "games" between 1900 and 1950:
+Words related to "games" between 1900 and 1950:  
 ![](http://dailymark.legal/images/games_1950s.png)
 
-Words related to "games" between 2000 and present day:
+Words related to "games" between 2000 and present day:  
 ![](http://dailymark.legal/images/games_modern.png)
 # Credits
-The library uses [nemec's implementation of the Porter2 stemmer](https://github.com/nemec/porter2-stemmer)
+The library uses [nemec's implementation of the Porter2 stemmer](https://github.com/nemec/porter2-stemmer)  
 NalpMark uses [Konva JavaScript Framework](https://konvajs.org/) for word clouds
