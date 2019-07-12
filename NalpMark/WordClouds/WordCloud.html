@@ -26,7 +26,7 @@
     "use strict";
 
     WordCloud.colors = ["#84DCC6","#90C978", "#5DB1D1", "#D99294", "#FF784F", "#9BC53D", "#FFD670", "#B0228C", "#00C2C7", "#FF7f50", "#F6CACB"];	
-    WordCloud.colorIndex=0;
+    WordCloud.colorIndex = 0;
     WordCloud.totalheightOffset = 0;
     WordCloud.titleFontSize = 40;
     WordCloud.titleOffset = 10;
@@ -46,7 +46,7 @@
 	function addText(text, fontSize, heightOffset, color, nameString, noDrag)
     {
 		window["cloudWord" + text] =  new Konva.Text({
-			x: stage.width() / 1.5,
+			x: stage.width() / 3,
 			y: heightOffset,
 			text: text,
 			fontSize: fontSize,
