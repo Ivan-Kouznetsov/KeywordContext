@@ -93,26 +93,9 @@ namespace NalpMark
         }
         #endregion
 
-        public static void OpenBrowser(string url)
-        {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                url = url.Replace("&", "^&");
-                Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") { CreateNoWindow = true });
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                Process.Start("xdg-open", url);
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                Process.Start("open", url);
-            }
-        }
-
         private void LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            OpenBrowser("https://github.com/Ivan-Kouznetsov");
+            Sevices.BrowserService.OpenBrowser("https://github.com/Ivan-Kouznetsov");
         }
     }
 }

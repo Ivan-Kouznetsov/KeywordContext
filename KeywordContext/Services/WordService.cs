@@ -29,7 +29,7 @@ namespace KeywordContext.Services
                                                 "why","how","all","any","both","each","few","more",
                                                 "most","other","some","such","no","nor","not","only",
                                                 "own","same","so","than","too","very", "namely", "including",
-                                                "among", "featuring", "field", "services", "goods", "providing", "use", "provided"};
+                                                "among", "featuring", "field", "services", "goods", "providing", "use", "provided", "based"};
 
             return stopwords.Contains(word);
         }

@@ -1,12 +1,11 @@
-﻿using KeywordContext.Comparers;
-using KeywordContext.Models;
-using KeywordContext.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+using KeywordContext.Models;
+using NalpMark.Sevices;
+using NalpMark.Models;
 
 namespace NalpMark
 {
@@ -14,6 +13,7 @@ namespace NalpMark
     {
         private string databaseFilepath = "";
         const int ColumnWidth = 567;
+        private (List<CountedWord> ImportantWords, List<SentenceFragment> ExampleFragments) results = (new List<CountedWord>(), new List<SentenceFragment>());
         public MainForm()
         {
             InitializeComponent();
@@ -159,46 +159,24 @@ namespace NalpMark
             List<int> classes = GetSelectedClasses();
             string fileLocation = databaseFilepath;
             int limit = (int)numericUpDownSelectLimit.Value;
+           
 
-            List<Word> importantStems = new List<Word>();
-            List<SentenceFragment> exampleFragments = new List<SentenceFragment>();
+
             try
             {
-                await Task.Run(() =>
+                await Task.Run(() => {results = SearchService.Search(databaseFilepath,from,to,classes,keyword,limit, useFilingDate,maxWordsAround,resultsLimit);});
+
+                for (int i = 0; i < results.ImportantWords.Count; i++)
                 {
-                    string text = DAO.GetText(fileLocation, from, to, classes, keyword, limit, useFilingDate);
-
-                    if (text.Length > 0)
-                    {
-                        WordSequenceParser wordSequenceParser = new WordSequenceParser(new Stemmer(), maxWordsAround);
-
-                        IEnumerable<string> words = Tokenizer.GetTokens(text, keyword);
-                        List<SentenceFragment> sentenceFragments = wordSequenceParser.FindSentenceFragments(new List<string>(words), keyword);
-                        IEnumerable<CountedWord> countedStems = wordSequenceParser.CountWordOccurancesInSequences(sentenceFragments);
-
-                        importantStems = countedStems.Where(x => x.Count > 0 && !WordService.IsStopword(x.Word.FullWord) && x.Word.FullWord.Length > 2)
-                                                                .OrderBy(x => x, new CountedWordComparer())
-                                                                .Select(x => x.Word)
-                                                                .Take(resultsLimit).ToList();
-
-                        exampleFragments = sentenceFragments.Where(s => s.ContainsAnyStems(importantStems))
-                                                                                   .Distinct(new SentenceFragmentEqualityComparer())
-                                                                                   .Take(resultsLimit).ToList();
-                    }
-                }
-                );
-
-                for (int i = 0; i < importantStems.Count; i++)
-                {
-                    listViewWords.Items.Add(importantStems[i].FullWord);
+                    listViewWords.Items.Add(results.ImportantWords[i].Word.FullWord);
                 }
 
-                for (int i = 0; i < exampleFragments.Count; i++)
+                for (int i = 0; i < results.ExampleFragments.Count; i++)
                 {
-                    listViewExampleFragments.Items.Add(exampleFragments[i].ToString());
+                    listViewExampleFragments.Items.Add(results.ExampleFragments[i].ToString());
                 }
 
-                if ((importantStems.Count + exampleFragments.Count) == 0)
+                if ((results.ImportantWords.Count + results.ExampleFragments.Count) == 0)
                 {
                     MessageBox.Show("No results found");
                 }
@@ -224,6 +202,22 @@ namespace NalpMark
             SelectAllClasses();
             dateTimePickerFrom.Value = DateTime.Parse("Jan 1 1800");
             dateTimePickerTo.Value = DateTime.Now;
+        }
+
+        private void ExportWordCloudToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (results.ImportantWords.Count == 0) {
+                MessageBox.Show("There are no results to export", "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                return;
+            }
+            WordCloud wordCloud = new WordCloud();
+
+            foreach (CountedWord countedWord in results.ImportantWords)
+            {
+                wordCloud.AddWord(countedWord.Word.FullWord, countedWord.Count);
+            }
+            
+            WordCloudExportService.Show(wordCloud, textBoxSearch.Text);           
         }
     }
 }

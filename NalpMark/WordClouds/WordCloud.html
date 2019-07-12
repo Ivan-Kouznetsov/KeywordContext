@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>WordCloud</title>
+	<style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: white;
+      }
+      #instructions {
+        text-align:center;
+        color:#0f6c6d;
+      }
+  </style>
+  <script type="text/javascript" src="konva.min.js"></script>
+</head>
+<body>
+<div id="instructions">Click on words to drag and rotate them. Right click to save the image.</div>
+<div id="container"></div>
+<script type="text/javascript" src="currentData.js"></script>
+<script type="text/javascript">	
+    "use strict";
+
+    WordCloud.colors = ["#84DCC6","#90C978", "#5DB1D1", "#D99294", "#FF784F", "#9BC53D", "#FFD670", "#B0228C", "#00C2C7", "#FF7f50", "#F6CACB"];	
+    WordCloud.colorIndex=0;
+    WordCloud.totalheightOffset = 0;
+    WordCloud.titleFontSize = 40;
+    WordCloud.titleOffset = 10;
+
+	function getRandomInt(max) {
+		return Math.floor(Math.random() * Math.floor(max));
+	}
+
+    function getColor()
+	{
+        if (WordCloud.colorIndex === WordCloud.colors.length) WordCloud.colorIndex=0;
+		var selected = WordCloud.colors[WordCloud.colorIndex];
+        WordCloud.colorIndex++;
+        return selected;
+	}
+        
+	function addText(text, fontSize, heightOffset, color, nameString, noDrag)
+    {
+		window["cloudWord" + text] =  new Konva.Text({
+			x: stage.width() / 1.5,
+			y: heightOffset,
+			text: text,
+			fontSize: fontSize,
+			fontFamily: 'Calibri',
+			fill: color === undefined? getColor() : color,
+			name: nameString === undefined? 'word' : nameString,
+			draggable: noDrag === undefined? true : !noDrag	
+		});
+		
+		layer.add(window["cloudWord" + text]);
+	}
+
+     var stage = new Konva.Stage({
+        container: 'container',
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+
+	 var layer = new Konva.Layer();
+     stage.add(layer);
+
+     addText("Words Related To: " + WordCloud.keyword.toUpperCase(), WordCloud.titleFontSize, WordCloud.titleOffset, "#0f6c6d", "title", true);
+	 
+	 for(var i=0;i<WordCloud.words.length;i++)
+	 {
+        var topOffset = 50;
+		WordCloud.totalheightOffset += (i === 0 ? topOffset : WordCloud.words[i-1].fontSize);  
+		addText(WordCloud.words[i].text, WordCloud.words[i].fontSize, WordCloud.totalheightOffset);
+	 }
+	
+	 layer.draw();
+
+	 stage.on('click tap', function(e) {
+        // if click on empty area - remove all transformers
+        if (e.target === stage) {
+          stage.find('Transformer').destroy();
+          layer.draw();
+          return;
+        }
+		
+		if (!e.target.hasName('word')) {
+          return;
+        }
+        // remove old transformers       
+        stage.find('Transformer').destroy();
+
+        // create new transformer
+        var tr = new Konva.Transformer({resizeEnabled:false});
+        layer.add(tr);
+        tr.attachTo(e.target);
+        layer.draw();
+      });
+</script>
+</body>
+</html>
