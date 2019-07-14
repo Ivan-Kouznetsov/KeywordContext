@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using KeywordContext.Models;
-using NalpMark.Sevices;
+using NalpMark.Services;
 using NalpMark.Models;
 
 namespace NalpMark
@@ -159,12 +159,16 @@ namespace NalpMark
             List<int> classes = GetSelectedClasses();
             string fileLocation = databaseFilepath;
             int limit = (int)numericUpDownSelectLimit.Value;
-           
 
+
+            var start = DateTime.Now;
 
             try
             {
-                await Task.Run(() => {results = SearchService.Search(databaseFilepath,from,to,classes,keyword,limit, useFilingDate,maxWordsAround,resultsLimit);});
+                await Task.Run(() =>
+                {
+                    results = SearchService.Search(databaseFilepath, from, to, classes, keyword, limit, useFilingDate, maxWordsAround, resultsLimit);
+                });
 
                 for (int i = 0; i < results.ImportantWords.Count; i++)
                 {
@@ -183,13 +187,13 @@ namespace NalpMark
 
                 listViewWords.Columns[0].Width = ColumnWidth;
                 listViewExampleFragments.Columns[0].Width = ColumnWidth;
-            }
-            catch
+        }
+            catch(Exception ex)
             {
-                MessageBox.Show("Error reading from the database.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            ToggleForm(false);
+    ToggleForm(false);
         }
 
         private void MainForm_Load(object sender, EventArgs e)

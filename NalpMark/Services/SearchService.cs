@@ -4,8 +4,9 @@ using KeywordContext.Comparers;
 using KeywordContext.Models;
 using KeywordContext.Services;
 using System.Linq;
+using System.Diagnostics;
 
-namespace NalpMark.Sevices
+namespace NalpMark.Services
 {
     public static class  SearchService
     {
@@ -26,9 +27,11 @@ namespace NalpMark.Sevices
 
             if (text.Length > 0)
             {
-                WordSequenceParser wordSequenceParser = new WordSequenceParser(new Stemmer(), maxWordsAround);
+                WordSequenceParser wordSequenceParser = new WordSequenceParser(new Stemmer(), maxWordsAround);                             
+                var words = Tokenizer.GetTokens(text, keyword);
+                PhraseParser phraseParser = new PhraseParser();
+                phraseParser.JoinAllPhrases(ref words,2,1);            
 
-                IEnumerable<string> words = Tokenizer.GetTokens(text, keyword);
                 List<SentenceFragment> sentenceFragments = wordSequenceParser.FindSentenceFragments(new List<string>(words), keyword);
                 IEnumerable<CountedWord> countedStems = wordSequenceParser.CountWordOccurancesInSequences(sentenceFragments);
 

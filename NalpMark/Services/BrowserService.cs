@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace NalpMark.Sevices
+namespace NalpMark.Services
 {
     public class BrowserService
     {

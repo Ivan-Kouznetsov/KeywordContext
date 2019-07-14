@@ -26,7 +26,7 @@ namespace KeywordContext.Services
 
             for (int i = 0; i < orderedList.Count; i++)
             {
-                if (Stemmer.HasSameStem(keyword, orderedList[i]))
+                if (Stemmer.HasSameStem(keyword, orderedList[i]) || keyword==orderedList[i])
                 {
                     // Before and after need to check bounds
 

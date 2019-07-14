@@ -4,7 +4,7 @@ using System.Linq;
 using NalpMark.Models;
 using System.IO;
 
-namespace NalpMark.Sevices
+namespace NalpMark.Services
 {
     public static class WordCloudExportService
     {

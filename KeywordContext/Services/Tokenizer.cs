@@ -11,12 +11,14 @@ namespace KeywordContext.Services
         {
             Separators = Enumerable.Range(0, char.MaxValue + 1)
                                    .Select(i => (char)i)
-                                   .Where(c => char.IsPunctuation(c) || char.IsSymbol(c) || char.IsSeparator(c))
+                                   .Where(c => char.IsPunctuation(c) || char.IsSymbol(c) || char.IsSeparator(c) || Environment.NewLine.ToCharArray().Contains(c))
                                    .ToArray();
         }
 
         static bool IsKeywordStartIndex(char[] chars, int startIndex, string keyword)
         {
+            if (keyword == null) return false;
+
             int endIndex = startIndex + keyword.Length-1;
             char[] keywordChars = keyword.ToCharArray();
           
@@ -50,7 +52,14 @@ namespace KeywordContext.Services
                 {
                     // return token
                     endIndex = i;
-                    return new string(tokenChars.ToArray());
+                    if (tokenChars.Count > 0)
+                    {
+                        if (!Separators.Contains(chars[i])) tokenChars.Add(chars[i]);
+                        return new string(tokenChars.ToArray());
+                    }
+                    else {
+                        return null;
+                    }
                 }
                 else
                 {
@@ -63,9 +72,10 @@ namespace KeywordContext.Services
             return null;
         }
 
-        public static List<string> GetTokens(string text, string keyword)
+        public static List<string> GetTokens(string text, string keyword=null)
         {
-            text = text.ToLower().Trim();
+            if (keyword!=null) keyword = keyword.ToLower();
+            text = text.ToLower().Trim().Replace(Environment.NewLine," ");
             char[] chars = text.ToCharArray();
             List<string> tokens = new List<string>();
             bool keywordFound = false;
@@ -87,8 +97,8 @@ namespace KeywordContext.Services
                     }
                 }
             }
-
-            return keywordFound ? tokens.Where(t => t.Length > 0).ToList() : new List<string>();
+            var result = (keywordFound || keyword==null) ? tokens : new List<string>();
+            return result; 
         }
     }
 }

@@ -95,7 +95,7 @@ namespace NalpMark
 
         private void LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Sevices.BrowserService.OpenBrowser("https://github.com/Ivan-Kouznetsov");
+            Services.BrowserService.OpenBrowser("https://github.com/Ivan-Kouznetsov");
         }
     }
 }

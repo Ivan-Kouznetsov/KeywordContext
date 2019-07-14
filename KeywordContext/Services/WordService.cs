@@ -1,13 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace KeywordContext.Services
 {
     public static class WordService
     {
-        public static bool IsStopword(string word)
-        {
-            string[] stopwords = new string[] {"i","me","my","myself","we","our","ours","ourselves",
+        public static string[] Stopwords { get; } = new string[] {"i","me","my","myself","we","our","ours","ourselves",
                                                 "you","your","yours","yourself","yourselves","he","him","his",
                                                 "himself","she","her","hers","herself","it","its","itself",
                                                 "they","them","their","theirs","themselves","what","which","who",
@@ -22,8 +21,8 @@ namespace KeywordContext.Services
                                                 "couldn't","mustn't","let's","that's","who's","what's","here's","there's",
                                                 "when's","where's","why's","how's","a","an","the","and",
                                                 "but","if","or","because","as","until","while","of",
-                                                "at","by","for","with","about","against","between","into",
-                                                "through","during","before","after","above","below","to","from",
+                                                "at","by","for","with","about","against","between", "in","into",
+                                                "through","during","begin","began", "before","after","above","below","to","from",
                                                 "up","down","in","out","on","off","over","under",
                                                 "again","further","then","once","here","there","when","where",
                                                 "why","how","all","any","both","each","few","more",
@@ -31,7 +30,27 @@ namespace KeywordContext.Services
                                                 "own","same","so","than","too","very", "namely", "including",
                                                 "among", "featuring", "field", "services", "goods", "providing", "use", "provided", "based"};
 
-            return stopwords.Contains(word);
+        public static bool IsStopword(string word)
+        {          
+            return Stopwords.Contains(word);
+        }
+
+        public static List<string> RemoveStopwordPhrases(List<string> pharses)
+        {
+            List<string> newPharses = new List<string>();
+
+            foreach(string p in pharses)
+            { 
+                bool remove = true;
+                foreach (string s in p.Split(' '))
+                {
+                    if (!Stopwords.Contains(s)) remove = false;
+                }
+
+                if (!remove) newPharses.Add(p); 
+            }
+
+            return newPharses;
         }
     }
 }

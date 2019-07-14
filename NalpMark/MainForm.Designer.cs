@@ -438,7 +438,7 @@
             this.numericUpDownSelectLimit.Size = new System.Drawing.Size(87, 20);
             this.numericUpDownSelectLimit.TabIndex = 19;
             this.numericUpDownSelectLimit.Value = new decimal(new int[] {
-            1000,
+            100,
             0,
             0,
             0});
